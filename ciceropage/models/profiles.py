@@ -1,5 +1,5 @@
-from ciceropage import db
-from . import User
+from db import db
+from . import User, City
 
 
 class Profile(db.Model):
@@ -13,5 +13,7 @@ class Profile(db.Model):
     identification_type = db.Column(db.String(10), nullable=False)
     identification_number = db.Column(db.String(20), nullable=False)
     phone = db.Column(db.String(14))
+
+    city_id = db.Column(db.Integer, db.ForeignKey(City.city_id))
 
     user = db.relationship(User, back_populates="profile")

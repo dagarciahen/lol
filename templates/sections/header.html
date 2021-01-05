@@ -1,0 +1,8 @@
+{% if not show_nav is defined %}
+    {% set show_nav = True %}
+{% endif %}
+<header>
+    {% if show_nav %}
+        {% include 'sections/nav.html' %}
+    {% endif %}
+</header>

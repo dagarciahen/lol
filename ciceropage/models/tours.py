@@ -1,6 +1,6 @@
-from ciceropage import db, login_manager
 from datetime import datetime
 
+from db import db
 from . import User, City
 
 
@@ -8,6 +8,7 @@ class Tour(db.Model):
     __tablename__ = 'tours'
 
     tour_id = db.Column(db.Integer, primary_key=True)
+    thumbnail = db.Column(db.Text, nullable=False)
     title = db.Column(db.String(140), nullable=False)
     description = db.Column(db.Text, nullable=False)
     status = db.Column(db.Text, nullable=False)
@@ -17,8 +18,8 @@ class Tour(db.Model):
     city_id = db.Column(db.Integer, db.ForeignKey(City.city_id))
     user_id = db.Column(db.Integer, db.ForeignKey(User.user_id))
 
-    images = db.relationship('images')
-    favorited_by = db.relationship('favorites')
+    images = db.relationship('Image')
+    favorited_by = db.relationship('Favorite')
 
 
 class Image(db.Model):

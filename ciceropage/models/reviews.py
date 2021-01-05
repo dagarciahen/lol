@@ -1,4 +1,4 @@
-from ciceropage import db
+from db import db
 from . import User, Tour
 
 

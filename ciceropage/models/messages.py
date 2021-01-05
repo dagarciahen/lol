@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from ciceropage import db
+from db import db
 from . import User
 
 

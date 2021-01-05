@@ -1,0 +1,22 @@
+{% set show_nav = False %}
+{% extends 'layout/base.html' %}
+{% block title %}Account verification{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="row min-vh-100">
+        <div class="col-md-4 offset-md-4 d-flex align-items-center">
+            <div id="signup-container" class="p-5 text-center">
+                <div class="mb-5">
+                    <a href="">Logo</a>
+                </div>
+                {% if email %}
+                <p>Your email address <b>{{email}}</b> has been verified. Please click on the button below to set up your account.</p>
+                <a class="btn btn-primary" href="{{ url_for('signup.complete') }}">Set up account</a>
+                {% else %}
+                <p>Opps! We couldn't verify your email address, make sure the URL is OK or try signing up again.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

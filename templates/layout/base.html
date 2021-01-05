@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %} | CICERO</title>
+    {% include 'layout/head.html' %}
+</head>
+<body>
+    {% include 'sections/header.html' %}
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    {% include 'layout/footer.html' %}
+</body>
+</html>

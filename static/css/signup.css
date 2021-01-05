@@ -1,0 +1,11 @@
+#signup-featured-img {
+    background-image: url('../images/pexels-quang-nguyen-vinh-2178175-min.jpg');
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+#signup-container {
+    border: 1px solid #ececec;
+    border-radius: 4px;
+}

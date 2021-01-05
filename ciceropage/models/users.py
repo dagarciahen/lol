@@ -3,15 +3,10 @@ from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 
-from ciceropage import db, login_manager
+from db import db
 
 
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(user_id)
-
-
-class User(db.Model, UserMixin):
+class User(UserMixin, db.Model):
     __tablename__ = 'users'
 
     user_id = db.Column(db.Integer, primary_key=True)
@@ -20,15 +15,18 @@ class User(db.Model, UserMixin):
     is_active = db.Column(db.Boolean, default=False)
     joined_on = db.Column(db.DateTime, default=datetime.utcnow())
 
-    profile = db.relationship('profile', uselist=False, back_populates="user")
-    tours = db.relationship('tours')
-    reviews = db.relationship('reviews')
-    languages = db.relationship('users_languages')
-    favorites = db.relationship('favorites')
+    profile = db.relationship('Profile', uselist=False, back_populates="user")
+    tours = db.relationship('Tour')
+    reviews = db.relationship('Review')
+    languages = db.relationship('UserLanguage')
+    favorites = db.relationship('Favorite')
 
     def __init__(self, email, passwd):
         self.email = email
         self.password = generate_password_hash(passwd)
+
+    def get_id(self):
+        return self.user_id
 
     def check_password(self, passwd):
         return check_password_hash(self.password, passwd)

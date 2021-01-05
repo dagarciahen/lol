@@ -1,0 +1,48 @@
+{% extends 'layout/base.html' %}
+{% block title %}Profile{% endblock %}
+{% block content %}
+  <section class="py-5 text-center container">
+    <div class="row py-lg-5">
+      <div class="col-lg-6 col-md-8 mx-auto">
+        <h1 class="fw-light">{{ user.profile.name }} {{ user.profile.last_name }}</h1>
+        <p class="text-muted">
+          email: {{ user.email }} - tel: {{ user.profile.phone }}
+        </p>
+        <p class="lead text-muted">
+          {% if user.profile.bio %}
+          {{ user.profile.bio }}
+          {% else %}
+          [Add a bio]
+          {% endif %}
+        </p>
+        <p>
+          {% if not current_user == user %}
+          <a href="{{ url_for('users.chat_to', user_id=user.user_id) }}" class="btn btn-primary my-2">Send message</a>
+          {% else %}
+          <a href="#" class="btn btn-primary my-2">Edit profile</a>
+          {% endif %}
+        </p>
+      </div>
+    </div>
+  </section>
+  <div class="album py-5 bg-light">
+    <div class="container">
+      <div class="row">
+            <div class="mb-5">
+        <h2>Tours by me</h2>
+        </div>
+      </div>
+      {% include 'sections/tours-list.html' %}
+    </div>
+  </div>
+{% endblock %}
+
+<footer class="text-muted py-5">
+  <div class="container">
+    <p class="float-end mb-1">
+      <a href="#">Back to top</a>
+    </p>
+    <p class="mb-1">Album example is &copy; Bootstrap, but please download and customize it for yourself!</p>
+    <p class="mb-0">New to Bootstrap? <a href="/">Visit the homepage</a> or read our <a href="../getting-started/introduction/">getting started guide</a>.</p>
+  </div>
+</footer>

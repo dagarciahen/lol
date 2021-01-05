@@ -1,0 +1,36 @@
+{% extends 'layout/base.html' %}
+{% block title %}Chat to ...{% endblock %}
+{% block content %}
+  <section class="py-5 text-center container">
+    <div class="row py-lg-5">
+      <div class="col-lg-6 col-md-8 mx-auto">
+        <div class="profile-container">
+
+        </div>
+        <h1 class="fw-light">{{ user.profile.name }} {{ user.profile.last_name }}</h1>
+        <p class="text-muted">
+          {{ user.email }} | {{ user.profile.phone }}
+        </p>
+        <p class="lead text-muted">
+          {% if user.profile.bio %}
+          {{ user.profile.bio }}
+          {% else %}
+          [Add a bio]
+          {% endif %}
+        </p>
+        <p>
+          {% if not current_user == user %}
+          <a href="#" class="btn btn-primary my-2">Send message</a>
+          {% else %}
+          <a href="#" class="btn btn-primary my-2">Edit profile</a>
+          {% endif %}
+        </p>
+      </div>
+    </div>
+  </section>
+<section class="container">
+  <div class="row">
+    Chat
+  </div>
+</section>
+{% endblock %}
