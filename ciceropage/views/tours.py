@@ -1,25 +1,31 @@
-from flask import Blueprint, render_template, request, abort, flash
+from flask import Blueprint, render_template, request, abort, flash, redirect, url_for
 from flask_login import login_required, current_user
 
 from db import db
-from ..forms.tours import TourForm
-from ..models import User, Tour, Image
+from ..forms.tours import TourForm, ReviewForm
+from ..models import User, Tour, Image, Review, Favorite
 from ..utils.picture_handler import upload_picture
 
 tours = Blueprint('tours', __name__, url_prefix='/tours')
 
+ROW_PER_PAGE = 6
+
 
 @tours.route('', methods=['GET'])
 def list_all():
-    tour_list = Tour.query.filter_by(status='published')
+    page = request.args.get('page', 1, type=int)
+    tour_list = Tour.query.filter_by(status='published').order_by(
+        Tour.date.desc()
+    ).paginate(
+        page=page, per_page=ROW_PER_PAGE
+    )
     return render_template('pages/tours/list.html', tours=tour_list)
 
 
 @tours.route('/by/me', methods=['GET'])
+@login_required
 def my():
-    tour_list = Tour.query.filter_by(user_id=current_user.user_id)
-    for tour in tour_list:
-        print(tour)
+    tour_list = Tour.query.filter_by(user_id=current_user.user_id).order_by(Tour.date.desc()).all()
     return render_template('pages/tours/by_me.html', tours=tour_list)
 
 
@@ -28,7 +34,6 @@ def my():
 def new():
     form = TourForm()
     if form.validate_on_submit():
-        print('valid')
         tour = Tour()
         tour.title = request.form.get('title')
         tour.description = request.form.get('description')
@@ -47,18 +52,28 @@ def new():
 
         # upload and save pictures
 
-
         # commit changes to db
         db.session.add(tour)
         db.session.commit()
-        flash("Your tour has been saved.")
+        flash("Your tour has been saved.", category='success')
+        return redirect(url_for('tours.my'))
     return render_template('pages/tours/new.html', form=form)
 
 
 @tours.route('/<int:tour_id>', methods=['GET'])
 def show(tour_id):
     tour = Tour.query.get_or_404(tour_id)
-    return render_template('pages/tours/show.html', tour=tour)
+
+    # check if the item is public
+    if tour.status in ['hidden', 'draft'] and tour.user_id != current_user.user_id:
+        abort(403)
+
+    # this is the form to post a review
+    form = ReviewForm()
+
+    # get reviews
+    reviews = Review.query.filter_by(tour_id=tour_id).all()
+    return render_template('pages/tours/show.html', tour=tour, reviews=reviews, form=form)
 
 
 @tours.route('/<int:tour_id>/edit', methods=['GET', 'POST'])
@@ -88,10 +103,36 @@ def delete(tour_id):
     return "Delete tour: {}".format(tour_id)
 
 
+@tours.route('/<int:tour_id>/favorite', methods=['POST'])
+@login_required
+def favorite(tour_id):
+    favorited = Favorite()
+    favorited.user_id = current_user.user_id
+    favorited.tour_id = tour_id
+    flash("Added to favorites", category='success')
+    return redirect(url_for('tours.show', tour_id=tour_id))
+
+
 @tours.route('/<int:tour_id>/reviews', methods=['POST'])
 @login_required
 def add_review(tour_id):
-    return "Add review"
+    form = ReviewForm()
+    tour = Tour.query.get(tour_id)
+    if current_user.user_id != tour.user_id:
+        if form.validate_on_submit():
+            review = Review()
+            review.tour_id = tour_id
+            review.user_id = current_user.user_id
+            review.rating = int(request.form.get('rating'))
+            review.comment = request.form.get('comment')
+
+            db.session.add(review)
+            db.session.commit()
+
+            flash("Review added.", category='success')
+    else:
+        flash("You can't review your own tour.", category='error')
+    return redirect(url_for('tours.show', tour_id=tour_id))
 
 
 @tours.route('/<int:tour_id>/reviews/<int:review_id>', methods=['GET', 'POST'])
@@ -100,7 +141,13 @@ def edit_review(tour_id, review_id):
     return "Edit review"
 
 
-@tours.route('/<int:tour_id>/reviews/<int:review_id>/delete', methods=['GET', 'POST'])
+@tours.route('/<int:tour_id>/reviews/<int:review_id>/delete', methods=['POST'])
 @login_required
 def delete_review(tour_id, review_id):
     return "Delete review"
+
+
+@tours.route('/search', methods=['GET', 'POST'])
+@login_required
+def search():
+    return "Search"

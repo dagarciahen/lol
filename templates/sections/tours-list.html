@@ -1,22 +1,22 @@
   {% if tours %}
   <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-    {% for tour in tours %}
+    {% for tour in tours.items %}
     <div class="col">
       <div class="card shadow-sm">
         <div class="card-img-container card-img-top">
           <img src="{{ url_for('static', filename='images/tours'+ '/' + tour.thumbnail) }}" />
         </div>
         <div class="card-body">
-          <h5 class="card-title">{{ tour.title }}</h5>
-          <p class="card-text">{{ tour.description }}</p>
+          <h5 class="card-title">{{ tour.title | truncate(60)}} {% if tour.status == 'draft' %} [Draft] {% endif %}</h5>
+          <p class="card-text">{{ tour.description | truncate(100) }}</p>
           <div class="d-flex justify-content-between align-items-center">
             <div class="btn-group">
-              <a class="btn btn-sm btn-outline-secondary" href="#">View</a>
+              <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('tours.show', tour_id=tour.tour_id) }}">View</a>
               {% if tour.user_id == current_user.user_id %}
-              <a class="btn btn-sm btn-outline-secondary" href="#">Edit</a>
+              <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('tours.edit', tour_id=tour.tour_id) }}">Edit</a>
               {% endif %}
             </div>
-            <small class="text-muted">{{ tour.date}}</small>
+            <small class="text-muted"><i class="bi bi-clock"></i> {{ moment(tour.date).fromNow() }}</small>
           </div>
         </div>
       </div>

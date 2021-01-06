@@ -19,6 +19,7 @@ class Tour(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey(User.user_id))
 
     images = db.relationship('Image')
+    author = db.relationship('User')
     favorited_by = db.relationship('Favorite')
 
 

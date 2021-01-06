@@ -1,0 +1,30 @@
+<form class="container" method="post" action="{{ url_for('tours.add_review', tour_id=tour.tour_id) }}">
+    <div class="row">
+        {{ form.csrf_token }}
+        <div class="col">
+            <div class="mt-5 mb-3">
+                <h3 class="h4">My review</h3>
+                <p class="text-muted">Your review will be posted publicly on the web.</p>
+            </div>
+            <div class="mb-3">
+                {{ form.rating.label(class_="form-label" ) }}
+                {{ form.rating(class_="form-control", min=1, max=5) }}
+                {% for error in form.rating.errors %}
+                 <div class="invalid-feedback d-block">
+                   {{ error }}
+                 </div>
+                {% endfor %}
+            </div>
+            <div class="mb-3">
+                {{ form.comment.label(class_="form-label" ) }}
+                {{ form.comment(class_="form-control", rows=8) }}
+                {% for error in form.comment.errors %}
+                 <div class="invalid-feedback d-block">
+                   {{ error }}
+                 </div>
+                {% endfor %}
+            </div>
+            <button type=submit class="btn btn-primary"><i class="bi bi-plus-circle"></i> {{ form.submit.label.text }}</button>
+        </div>
+    </div>
+</form>

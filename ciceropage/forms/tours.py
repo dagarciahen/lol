@@ -1,7 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, TextAreaField, MultipleFileField, SelectField, HiddenField
+from wtforms import StringField, SubmitField, TextAreaField, MultipleFileField, SelectField
 from wtforms.validators import DataRequired, NumberRange
 from flask_wtf.file import FileField, FileAllowed, FileRequired
+from wtforms.fields.html5 import IntegerField
 
 
 class TourForm(FlaskForm):
@@ -21,6 +22,6 @@ class TourForm(FlaskForm):
 
 
 class ReviewForm(FlaskForm):
-    rating = HiddenField(validators=[DataRequired(), NumberRange(1, 5)])
+    rating = IntegerField(default=3, validators=[DataRequired(), NumberRange(1, 5)])
     comment = TextAreaField('Comment', validators=[DataRequired()])
     submit = SubmitField('Post')

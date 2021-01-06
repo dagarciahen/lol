@@ -1,11 +1,103 @@
 {% extends 'layout/base.html' %}
 {% block title %}{{ tour.title }} - Tour {% endblock %}
 {% block content %}
-<div class="container-fluid">
+<section class="container">
+    {% include 'sections/flashed-messages.html' %}
     <div class="row">
-        <div class="col-12">
-            Tours
+        <div class="col">
+            <div class="mb-4">
+                <h1 class="h2">{{ tour.title }}</h1>
+            </div>
         </div>
     </div>
-</div>
+    <section class="row mb-4">
+        <div class="col">
+            <h2 class="lead">Description</h2>
+            <p>{{ tour.description }}</p>
+            <p>{{ moment(tour.date).format('dddd, MMMM Do YYYY, h:mm:ss a') }}</p>
+        </div>
+    </section>
+        <section class="row mb-4">
+        <div class="col">
+            <h2 class="lead">Pictures</h2>
+            <p>{{ tour.description }}</p>
+            <p>{{ moment(tour.date).format('dddd, MMMM Do YYYY, h:mm:ss a') }}</p>
+        </div>
+    </section>
+    <section class="row mt-4 mb-5">
+        <div class="col">
+            <h2 class="lead">Meet the tour guide</h2>
+            <div class="card mb-3" style="max-width: 400px;">
+              <div class="row g-0">
+                <div class="col-md-4">
+                    <div class="card-pic-container py-4 px-4">
+                    {% if tour.author.profile.picture %}
+                        <img src="{{ tour.author.profile.picture }}" alt="{{ tour.author.profile.name }} {{ tour.author.profile.last_name }}">
+                    {% else %}
+                        <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" fill="#999" class="bi bi-person-circle" viewBox="0 0 16 16">
+                          <path d="M13.468 12.37C12.758 11.226 11.195 10 8 10s-4.757 1.225-5.468 2.37A6.987 6.987 0 0 0 8 15a6.987 6.987 0 0 0 5.468-2.63z"/>
+                          <path fill-rule="evenodd" d="M8 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                          <path fill-rule="evenodd" d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zM0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8z"/>
+                        </svg>
+                    {% endif %}
+                    </div>
+                </div>
+                <div class="col-md-8">
+                  <div class="card-body">
+                    <h5 class="card-title">{{ tour.author.profile.name }} {{ tour.author.profile.last_name }}</h5>
+                    <p class="card-text">{{ tour.author.profile.bio }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <p></p>
+        </div>
+    </section>
+</section>
+<section class="container">
+    <div class="row">
+        <div class="col-12 mb-5">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+              <li class="nav-item" role="presentation">
+                <a class="nav-link active" id="reviews-tab" data-bs-toggle="tab" href="#reviews" role="tab" aria-controls="reviews" aria-selected="true">Reviews</a>
+              </li>
+              <li class="nav-item" role="presentation">
+                <a class="nav-link" id="add-review-tab" data-bs-toggle="tab" href="#add-review" role="tab" aria-controls="add-review" aria-selected="false"><i class="bi bi-plus-circle"></i> Add a review</a>
+              </li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+              <div class="tab-pane fade show active" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
+                  <div class="container pt-5">
+                      <div class="row">
+                          {% if reviews %}
+                            {% for review in reviews %}
+                            <div class="col-12">
+                                <div class="card mb-4 w-75">
+                                  <div class="card-body">
+                                    <h5 class="card-title">{{ review.user.profile.name }} {{ review.user.profile.last_name }}</h5>
+                                      <h6 class="card-subtitle mb-2 text-muted"><i class="bi bi-bookmark-star"></i> {{ review.rating }} stars <span class="mx-1"> · </span> <i class="bi bi-clock"></i> {{ moment(review.date).fromNow() }}</h6>
+                                    <p class="card-text">{{ review.comment }}</p>
+                                      {% if current_user.user_id == review.user_id %}
+                                        <a href="#" class="card-link">Edit</a>
+                                        <a href="#" class="card-link">Delete</a>
+                                      {% endif %}
+                                  </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                          {% else %}
+                             <div class="col-12">
+                               <p class="lead">Nothing to see here :(</p>
+                             </div>
+                          {% endif %}
+                      </div>
+                  </div>
+              </div>
+              <div class="tab-pane fade" id="add-review" role="tabpanel" aria-labelledby="add-review-tab">
+                {% include 'sections/tours-add-review.html' %}
+              </div>
+            </div>
+        </div>
+    </div>
+</section>
 {% endblock %}

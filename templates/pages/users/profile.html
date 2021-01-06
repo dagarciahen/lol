@@ -6,7 +6,7 @@
       <div class="col-lg-6 col-md-8 mx-auto">
         <h1 class="fw-light">{{ user.profile.name }} {{ user.profile.last_name }}</h1>
         <p class="text-muted">
-          email: {{ user.email }} - tel: {{ user.profile.phone }}
+          <i class="bi bi-envelope"></i> {{ user.email }} - <i class="bi bi-phone"></i> {{ user.profile.phone }}
         </p>
         <p class="lead text-muted">
           {% if user.profile.bio %}
@@ -17,9 +17,9 @@
         </p>
         <p>
           {% if not current_user == user %}
-          <a href="{{ url_for('users.chat_to', user_id=user.user_id) }}" class="btn btn-primary my-2">Send message</a>
+          <a href="{{ url_for('users.chat_to', user_id=user.user_id) }}" class="btn btn-primary my-2"><i class="bi bi-chat-left-dots"></i>  Send message</a>
           {% else %}
-          <a href="#" class="btn btn-primary my-2">Edit profile</a>
+          <a href="{{ url_for('users.edit', user_id=user.user_id) }}" class="btn btn-primary my-2"><i class="bi bi-pencil-square"></i> Edit profile</a>
           {% endif %}
         </p>
       </div>

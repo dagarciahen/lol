@@ -1,0 +1,191 @@
+{% extends 'layout/base.html' %}
+{% block title %}Messages{% endblock %}
+{% block content %}
+<section class="container-fluid">
+    <div class="row">
+        <div class="col border-bottom">
+            <div class="card border-0">
+              <div class="row g-0">
+                <div class="col-12 d-flex">
+                    <div class="custom-card-img m-3">
+                        {% if user.profile.picture %}
+                        {% else %}
+                        <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" fill="#399de4" class="bi bi-person-circle" viewBox="0 0 16 16">
+                            <path d="M13.468 12.37C12.758 11.226 11.195 10 8 10s-4.757 1.225-5.468 2.37A6.987 6.987 0 0 0 8 15a6.987 6.987 0 0 0 5.468-2.63z"/>
+                            <path fill-rule="evenodd" d="M8 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                            <path fill-rule="evenodd" d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zM0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8z"/>
+                        </svg>
+                        {% endif %}
+                    </div>
+                  <div class="card-body">
+                    <h5 class="card-title">{{ user.profile.name }} {{ user.profile.last_name }}</h5>
+                      {% if user.profile.bio %}
+                        <p class="card-text">{{ user.profile.bio }}</p>
+                      {% endif %}
+                      <a class="btn btn-outline-primary" href="{{ url_for('users.profile', user_id=user.user_id) }}">View profile</a>
+                  </div>
+                    <div class="m-3 align-self-center">
+                        <button class="btn-close" aria-label="Close" onclick="goToMessages()"></button>
+                    </div>
+                </div>
+              </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="container">
+    <!-- Content wrapper start -->
+    <div class="content-wrapper">
+        <!-- Row start -->
+        <div class="row">
+            <div class="col-12">
+                <div class="custom-card m-0">
+                    <!-- Row start -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="chat-container custom-scrollbar">
+                                <ul class="chat-box chatContainerScroll">
+                                    {% set ns = namespace(mark_as_last=False) %}
+                                    {% for message in messages %}
+                                        {% if loop.nextitem %}
+                                            {% if not loop.nextitem.sender_id == message.sender_id %}
+                                                {% set ns.mark_as_last = True %}
+                                            {% else %}
+                                                {% set ns.mark_as_last = False %}
+                                            {% endif %}
+                                        {% else %}
+                                            {% set ns.mark_as_last = True %}
+                                        {% endif %}
+                                    {% if not message.sender_id == current_user.user_id %}
+                                    <li class="chat-left {% if ns.mark_as_last %}chat-last{%endif%}">
+                                        <div class="chat-avatar">
+                                            <img src="https://www.bootdey.com/img/Content/avatar/avatar3.png" alt="Retail Admin">
+                                        </div>
+                                        <div class="chat-text">
+                                            <div class="chat-name">{{ message.sender.profile.name }} {{ message.sender.profile.last_name }}</div>
+                                            <p class="mb-1">{{ message.message }}</p>
+                                            <small class="chat-hour text-muted">{{ moment(message.date).fromNow() }}</small>
+                                        </div>
+                                    </li>
+                                    {% else %}
+                                    <li class="chat-right {% if ns.mark_as_last %}chat-last{%endif%}">
+                                        <div class="chat-text">
+                                            <p class="mb-1">{{ message.message }}</p>
+                                            <small class="chat-hour">{{ moment(message.date).fromNow() }}</small>
+                                        </div>
+                                        <div class="chat-avatar">
+                                            <img src="https://www.bootdey.com/img/Content/avatar/avatar3.png" alt="Retail Admin">
+                                        </div>
+                                    </li>
+                                    {% endif %}
+                                    {% set ns.last_sender = message.sender_id %}
+                                    {% endfor %}
+                                </ul>
+
+                            </div>
+                            <div class="form-group mb-0">
+                                <form method="POST">
+                                    <div class="input-group mb-3">
+                                        <textarea class="message form-control"  style="resize: none;" placeholder="Type your message here..."></textarea>
+                                        <input type="submit" class="btn btn-outline-primary" value="Send" type="button" />
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script id="hidden-chat-left" type="text/x-custom-template">
+    <li class="chat-left chat-attached">
+        <div class="chat-avatar">
+            <img src="https://www.bootdey.com/img/Content/avatar/avatar3.png" alt="Retail Admin">
+        </div>
+        <div class="chat-text">
+            <div class="chat-name"></div>
+            <p class="mb-1"></p>
+            <small class="chat-hour text-muted">
+                <span class="chat-timestamp" data-timestamp="x" data-function="fromNow" data-refresh="0" style=""></span>
+            </small>
+        </div>
+    </li>
+</script>
+<script id="hidden-chat-right" type="text/x-custom-template">
+    <li class="chat-right chat-attached">
+        <div class="chat-text">
+            <p class="mb-1"></p>
+            <small class="chat-hour">
+                <span class="chat-timestamp" data-timestamp="x" data-function="fromNow" data-refresh="0" style=""></span>
+            </small>
+        </div>
+        <div class="chat-avatar">
+            <img src="https://www.bootdey.com/img/Content/avatar/avatar3.png" alt="Retail Admin">
+        </div>
+    </li>
+</script>
+<script type="text/javascript">
+  var socket = io.connect('http://' + document.domain + ':' + location.port);
+  var chat_left = $('#hidden-chat-left').html()
+  var chat_right = $('#hidden-chat-right').html()
+
+    // initial scrolling
+  $('.chat-container').animate({ scrollTop: $('.chat-container').prop("scrollHeight")*2}, 1000);
+
+  // keyboard enter
+  $(".message").keypress(function (e) {
+    if(e.which == 13 && !e.shiftKey) {
+        $(this).closest("form").submit();
+        e.preventDefault();
+    }
+  });
+
+  setInterval(function(){
+    var timestamps = $('.chat-timestamp');
+    $.each(timestamps, function(index, el) {
+        console.log(index);
+        $(el).html(moment.utc($(el).data("timestamp")).fromNow());
+    });
+  }, 60000);
+
+  function goToMessages(){
+    location.href = "{{ url_for('users.my_messages') }}"
+  }
+
+  socket.on('connect', function() {
+    socket.emit('online', {
+      data: {{ current_user.user_id }}
+    }
+  )
+  var form = $( 'form' ).on( 'submit', function( e ) {
+    e.preventDefault()
+    let user_input = $('textarea.message' ).val()
+    console.log(user_input)
+    if(user_input !== ''){
+    socket.emit('chat', {
+      to: {{ user.user_id }},
+      message : user_input
+    } )
+    }
+    $( 'textarea.message' ).val( '' ).focus()
+    } )
+  } )
+  socket.on('{{ user.user_id }}@{{ current_user.get_hashed_id() }}', function( data ) {
+    console.log( data );
+    if(typeof data !== 'undefined'){
+        if(data.sender_id == {{ current_user.user_id }}){
+            var item = $(chat_right).clone()
+        }else{
+            var item = $(chat_left).clone()
+            $(item).find('.chat-name').html('{{ user.profile.name }} {{ user.profile.last_name }}')
+        }
+        $(item).find('p').html(data.message)
+        $(item).find('.chat-timestamp').attr('data-timestamp', data.date)
+        $(item).find('.chat-hour span').html(moment.utc(data.date).fromNow())
+        $('.chatContainerScroll').append(item)
+        $('.chat-container').animate({ scrollTop: $('.chat-container').prop("scrollHeight")*2}, 1800);
+    }
+  })
+</script>
+{% endblock %}

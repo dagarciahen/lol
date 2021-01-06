@@ -1,7 +1,7 @@
 {% extends 'layout/base.html' %}
 {% block title %}Tours{% endblock %}
 {% block content %}
-<div class="container">
+<div class="container mb-5">
     <div class="row">
         <div class="col">
             <div class="mt-5 mb-4">
@@ -10,5 +10,8 @@
         </div>
     </div>
     {% include 'sections/tours-list.html' %}
+    <div class="row my-5">
+        {% include 'sections/tours-pagination.html' %}
+    </div>
 </div>
 {% endblock %}

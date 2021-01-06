@@ -16,8 +16,8 @@ class User(UserMixin, db.Model):
     joined_on = db.Column(db.DateTime, default=datetime.utcnow())
 
     profile = db.relationship('Profile', uselist=False, back_populates="user")
-    tours = db.relationship('Tour')
-    reviews = db.relationship('Review')
+    tours = db.relationship('Tour', back_populates="author")
+    reviews = db.relationship('Review', back_populates="user")
     languages = db.relationship('UserLanguage')
     favorites = db.relationship('Favorite')
 
@@ -27,6 +27,9 @@ class User(UserMixin, db.Model):
 
     def get_id(self):
         return self.user_id
+
+    def get_hashed_id(self):
+        return hash(self.email)
 
     def check_password(self, passwd):
         return check_password_hash(self.password, passwd)

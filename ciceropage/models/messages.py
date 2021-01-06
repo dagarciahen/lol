@@ -16,3 +16,11 @@ class Message(db.Model):
 
     sender = db.relationship(User, foreign_keys=sender_id)
     recipient = db.relationship(User, foreign_keys=recipient_id)
+
+    def to_dict(self):
+        return {
+            "recipient_id": self.recipient_id,
+            "sender_id": self.sender_id,
+            "message": self.message,
+            "date": self.date.strftime('%Y-%m-%dT%H:%M:%S.%f')
+        }

@@ -10,6 +10,8 @@ class Country(db.Model):
     iso_code = db.Column(db.String(4), nullable=False)
     regions = db.relationship("Region")
 
+    regions = db.relationship("Region", back_populates="country")
+
 
 class Region(db.Model):
     __tablename__ = 'regions'
@@ -19,6 +21,9 @@ class Region(db.Model):
     cities = db.relationship("City")
 
     country_id = db.Column(db.Integer, db.ForeignKey('countries.country_id'))
+
+    cities = db.relationship("City", back_populates="region")
+    country = db.relationship("Country")
 
     def to_dict(self):
         return {
@@ -34,6 +39,8 @@ class City(db.Model):
     name = db.Column(db.String(100), nullable=False)
 
     region_id = db.Column(db.Integer, db.ForeignKey('regions.region_id'))
+
+    region = db.relationship("Region")
 
     def to_dict(self):
         return {
