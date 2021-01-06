@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, abort, flash, redirect, u
 from flask_login import login_required, current_user
 
 from db import db
-from ..forms.tours import TourForm, ReviewForm
+from ..forms.tours import TourForm, TourEditForm, ReviewForm
 from ..models import User, Tour, Image, Review, Favorite
 from ..utils.picture_handler import upload_picture
 
@@ -97,16 +97,31 @@ def show(tour_id):
 @tours.route('/<int:tour_id>/edit', methods=['GET', 'POST'])
 @login_required
 def edit(tour_id):
-    form = TourForm()
     tour = Tour.query.get_or_404(tour_id)
+    form = TourEditForm()
     if tour.user_id != current_user.user_id:
         abort(403)
-    form.title = tour.title
-    form.status = tour.status
-    form.description = tour.description
+    form.title.data = tour.title
+    form.status.data = tour.status
+    form.description.data = tour.description
+
     if form.validate_on_submit():
-        print('modify form')
-    return render_template('pages/tours/edit.html', form=form)
+        tour.title = request.form.get('title')
+        tour.status = request.form.get('status')
+        tour.description = request.form.get('description')
+
+        # check if we have another picture
+        if form.thumbnail.data:
+            # add thumbnail
+            thumbnail_file = form.thumbnail.data
+            thumbnail = upload_picture(thumbnail_file, current_user.user_id, (540, 460), 'tours')
+            tour.thumbnail = thumbnail
+
+        db.session.add(tour)
+        db.session.commit()
+        flash("Your changes have been saved.", category='success')
+        return redirect(url_for('tours.my'))
+    return render_template('pages/tours/edit.html', form=form, tour=tour)
 
 
 @tours.route('/<int:tour_id>/delete', methods=['GET', 'POST'])

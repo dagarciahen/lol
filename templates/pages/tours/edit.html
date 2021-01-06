@@ -1,14 +1,68 @@
 {% extends 'layout/base.html' %}
-{% block title %}Edit tour{% endblock %}
+{% block title %}{{ tour.title }} - Edit{% endblock %}
 {% block content %}
 <div class="container">
-    {% include 'sections/flashed-messages.html' %}
-    <div class="row">
+    <div class="row mt-5 mb-4">
         <div class="col">
-            <div class="mt-5 mb-4">
-                <h1 class="h3">Edit tour</h1>
-            </div>
+            <h1 class="h2">Edit tour</h1>
         </div>
     </div>
+    <form method="post" enctype="multipart/form-data">
+    <div class="row">
+        <div class="col-8">
+                {{ form.csrf_token }}
+                <div class="mb-3">
+                    {{ form.title.label(class_="form-label" ) }}
+                    {{ form.title(class_="form-control") }}
+                    {% for error in form.title.errors %}
+                     <div class="invalid-feedback d-block">
+                       {{ error }}
+                     </div>
+                    {% endfor %}
+                </div>
+                <div class="mb-3">
+                    {{ form.description.label(class_="form-label" ) }}
+                    {{ form.description(class_="form-control", rows=8) }}
+                    {% for error in form.description.errors %}
+                     <div class="invalid-feedback d-block">
+                       {{ error }}
+                     </div>
+                    {% endfor %}
+                </div>
+<!-- {#               <div class="mb-3">
+                    {{ form.pictures.label(class_="form-label" ) }}
+                    {{ form.pictures(class_="form-control") }}
+                    {% for error in form.pictures.errors %}
+                     <div class="invalid-feedback d-block">
+                       {{ error }}
+                     </div>
+                    {% endfor %}
+                </div>#}-->
+                <div class="mt-5">
+                    {{ form.submit(class_="btn btn-primary") }}
+                </div>
+        </div>
+        <div class="col-4">
+            <div class="mb-3">
+                {{ form.status.label(class_="form-label" ) }}
+                {{ form.status(class_="form-select") }}
+                {% for error in form.status.errors %}
+                 <div class="invalid-feedback d-block">
+                   {{ error }}
+                 </div>
+                {% endfor %}
+            </div>
+            <div class="mb-3">
+                    {{ form.thumbnail.label(class_="form-label" ) }}
+                    {{ form.thumbnail(class_="form-control") }}
+                    {% for error in form.thumbnail.errors %}
+                     <div class="invalid-feedback d-block">
+                       {{ error }}
+                     </div>
+                    {% endfor %}
+                </div>
+        </div>
+    </div>
+    </form>
 </div>
 {% endblock %}

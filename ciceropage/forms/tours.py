@@ -17,8 +17,17 @@ class TourForm(FlaskForm):
     thumbnail = FileField('Thumbnail', validators=[FileRequired(), FileAllowed(['jpg', 'png'])])
     description = TextAreaField('Description', validators=[DataRequired()])
     status = SelectField('Status', validators=[DataRequired()], choices=STATUS_CHOICES)
-    pictures = MultipleFileField('Pictures')
+    # pictures = MultipleFileField('Pictures')
     submit = SubmitField('Save')
+
+
+class TourEditForm(FlaskForm):
+
+    title = StringField('Title', validators=[DataRequired()])
+    thumbnail = FileField('Thumbnail', validators=[FileAllowed(['jpg', 'png'])])
+    description = TextAreaField('Description', validators=[DataRequired()])
+    status = SelectField('Status', validators=[DataRequired()], choices=TourForm.STATUS_CHOICES)
+    submit = SubmitField('Save changes')
 
 
 class ReviewForm(FlaskForm):
