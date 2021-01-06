@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from db import db
-from . import User, City
+from . import User, Country
 
 
 class Tour(db.Model):
@@ -10,19 +10,20 @@ class Tour(db.Model):
     tour_id = db.Column(db.Integer, primary_key=True)
     thumbnail = db.Column(db.Text, nullable=False)
     title = db.Column(db.String(140), nullable=False)
+    city = db.Column(db.Text, nullable=False)
     description = db.Column(db.Text, nullable=False)
     status = db.Column(db.Text, nullable=False)
     date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
 
     # foreign keys
-    city_id = db.Column(db.Integer, db.ForeignKey(City.city_id))
+    country_id = db.Column(db.Integer, db.ForeignKey(Country.country_id))
     user_id = db.Column(db.Integer, db.ForeignKey(User.user_id))
 
     images = db.relationship('Image')
     author = db.relationship('User')
     favorited_by = db.relationship('Favorite')
 
-    location = db.relationship('City')
+    country = db.relationship(Country)
 
 
 class Image(db.Model):

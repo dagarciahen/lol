@@ -5,7 +5,7 @@ from itsdangerous import BadSignature
 
 from db import db
 from ciceropage.forms.users import SignUpForm, SignUpCompletionForm
-from ciceropage.models import User, Profile, Country, City
+from ciceropage.models import User, Profile, Country
 
 signup = Blueprint('signup', __name__, url_prefix='/sign-up')
 
@@ -17,11 +17,13 @@ def sign_up():
     form = SignUpForm()
     sent_token = False
     if request.method == 'POST' and form.validate_on_submit():
+        user_type = request.args.get('account_type', 'tourist')
+        user_type = user_type if user_type in ['tourist', 'guide'] else 'tourist'
         email = request.form.get('email', None)
         if email:
             secret_key = current_app.config['SECRET_KEY']
             ts = URLSafeTimedSerializer(secret_key, salt='sign-up')
-            verification_token = ts.dumps(email)
+            verification_token = ts.dumps({"email": email, "user_type": user_type})
             print(verification_token)
             # TODO send email with activation link
             sent_token = verification_token is not None
@@ -34,22 +36,21 @@ def verify(verification_token):
         secret_key = current_app.config['SECRET_KEY']
         ts = URLSafeTimedSerializer(secret_key, salt='sign-up')
         try:
-            email = ts.loads(verification_token, max_age=7200)  # 2 hours
-
-            # set in a cookie the email for tyhe new account
-            session['signup_email'] = email
+            data = ts.loads(verification_token, max_age=7200)  # 2 hours
+            # set in a cookie the email for the new account
+            session['signup_data'] = data
         except BadSignature:
             print("Not a valid token.")
-            email = None
-    return render_template('pages/sign_up/verify.html', email=email)
+            data = None
+    return render_template('pages/sign_up/verify.html', data=data)
 
 
 @signup.route('/complete', methods=['GET', 'POST'])
 def complete():
     form = SignUpCompletionForm()
-    email = session.get('signup_email', None)
+    data = session.get('signup_data', None)
     created = False
-    if email:
+    if data:
         # populate country list
         countries = Country.query.all()
         form.country.choices = [(country.country_id, country.name) for country in countries] if countries else [
@@ -57,7 +58,8 @@ def complete():
         ]
         if form.validate_on_submit():
             password = request.form.get('password')
-            user = User(email, password)
+            user = User(data.get('email'), password)
+            user.type = data.get('user_type')
 
             # add profile info
             profile = Profile()
@@ -69,8 +71,8 @@ def complete():
             profile.phone = request.form.get('phone')
 
             # add city to profile
-            city = City.query.get(request.form.get('city'))
-            profile.city_id = city.city_id
+            profile.city = request.form.get('city')
+            profile.country_id = request.form.get('country')
 
             user.profile = profile
             user.is_active = True
@@ -79,7 +81,7 @@ def complete():
             db.session.commit()
 
             # eliminate tmp variable from session
-            session.pop('signup_email')
+            session.pop('signup_data')
             created = True
         return render_template('pages/sign_up/complete.html', form=form, created=created)
     return redirect(url_for('home.index'))

@@ -33,7 +33,6 @@ from ciceropage.views.auth import auth
 from ciceropage.views.signup import signup
 from ciceropage.views.home import home
 from ciceropage.views.tours import tours
-from ciceropage.views.locations import locations
 from ciceropage.views.users import users
 from ciceropage.views.error_pages import error_pages
 
@@ -43,7 +42,6 @@ app.register_blueprint(signup)
 app.register_blueprint(pages)
 app.register_blueprint(auth)
 app.register_blueprint(tours)
-app.register_blueprint(locations)
 app.register_blueprint(users)
 app.register_blueprint(error_pages)
 

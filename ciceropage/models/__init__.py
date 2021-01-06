@@ -1,4 +1,4 @@
-from .locations import Country, Region, City
+from .locations import Country
 from .users import User, Language, UserLanguage
 from .profiles import Profile
 from .tours import Tour, Image, Favorite

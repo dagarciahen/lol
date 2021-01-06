@@ -46,23 +46,14 @@
                         {% endfor %}
                         </div>
                         <div class="col-12 col-lg-6">
-                            {{ form.region.label(class_="form-label" ) }}*
-                            {{ form.region(class_="form-select", id="regionList") }}
-                            {% for error in form.region.errors %}
+                            {{ form.city.label(class_="form-label" ) }}*
+                            {{ form.city(class_="form-control", id="cityList") }}
+                            {% for error in form.city.errors %}
                              <div class="invalid-feedback d-block">
                                {{ error }}
                              </div>
-                        {% endfor %}
+                            {% endfor %}
                         </div>
-                    </div>
-                    <div class="mb-3">
-                        {{ form.city.label(class_="form-label" ) }}*
-                        {{ form.city(class_="form-select", id="cityList") }}
-                        {% for error in form.city.errors %}
-                         <div class="invalid-feedback d-block">
-                           {{ error }}
-                         </div>
-                        {% endfor %}
                     </div>
                     <hr />
                     <div class="row mb-3">
@@ -131,50 +122,4 @@
         </div>
     </div>
 </div>
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-<script type="text/javascript">
-    $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
-    $(function() {
-        getRegions = function(){
-            var $regionList = $('#regionList');
-            const url = '{{ url_for('locations.get_regions', country_id=0) }}'.replace(0, $('#countryList').val());
-            $.ajax({
-                type: 'GET',
-                url: url
-            }).done(function(data){
-                $.each(data.regions, function(){
-                    $regionList.append($('<option />').val(this.region_id).text(this.name));
-                });
-            });
-        }
-
-        getCities = function(){
-            var $cityList = $('#cityList');
-            const url = '{{ url_for('locations.get_cities', region_id=0) }}'.replace(0, $('#regionList').val());
-            $.ajax({
-                type: 'GET',
-                url: url
-            }).done(function(data){
-                $.each(data.cities, function(){
-                    $cityList.append($('<option />').val(this.city_id).text(this.name));
-                });
-            });
-        }
-
-        if(parseInt($('#countryList').val()) > 0){
-            getRegions();
-        }
-
-        if(parseInt($('#regionList').val()) > 0){
-            getCities();
-        }
-
-        $('#countryList').on('change', function(){
-            getRegions();
-        });
-        $('#regionList').on('change', function(){
-            getCities();
-        });
-    });
-</script>
 {% endblock %}

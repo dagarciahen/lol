@@ -6,6 +6,12 @@ from flask_wtf.file import FileField, FileAllowed
 
 from ciceropage.models import User
 
+IDENTIFICATION_TYPE_CHOICES = [
+    ('cc', 'CC'),
+    ('passport', 'Passport'),
+    ('nit', 'Nit')
+]
+
 
 class SignUpForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
@@ -19,12 +25,6 @@ class SignUpForm(FlaskForm):
 
 class SignUpCompletionForm(FlaskForm):
 
-    IDENTIFICATION_TYPE_CHOICES = [
-        ('cc', 'CC'),
-        ('passport', 'Passport'),
-        ('nit', 'Nit')
-    ]
-
     email = HiddenField()
     password = PasswordField('Password', validators=[DataRequired()])
     confirm_password = PasswordField('Confirm password', validators=[
@@ -32,8 +32,7 @@ class SignUpCompletionForm(FlaskForm):
         EqualTo('password', message="Passwords must match.")
     ])
     country = SelectField('Country', validate_choice=False)
-    region = SelectField('State/Region', choices=[(-1, 'Select a region')], validate_choice=False)
-    city = SelectField('City', choices=[(-1, 'Select a city')], validators=[DataRequired()], coerce=int, validate_choice=False)
+    city = StringField('City', validators=[DataRequired()])
     name = StringField('Name', validators=[DataRequired()])
     last_name = StringField('Last Name', validators=[DataRequired()])
     bio = TextAreaField('Bio')
@@ -51,15 +50,8 @@ class LoginForm(FlaskForm):
 
 class ProfileForm(FlaskForm):
 
-    IDENTIFICATION_TYPE_CHOICES = [
-        ('cc', 'CC'),
-        ('passport', 'Passport'),
-        ('nit', 'Nit')
-    ]
-
     country = SelectField('Country', validate_choice=False)
-    region = SelectField('State/Region', choices=[(-1, 'Select a region')], validate_choice=False)
-    city = SelectField('City', choices=[(-1, 'Select a city')], validators=[DataRequired()], coerce=int, validate_choice=False)
+    city = StringField('City', validators=[DataRequired()])
     picture = FileField('Profile picture', validators=[FileAllowed(['jpg', 'png'])])
     name = StringField('Name', validators=[DataRequired()])
     last_name = StringField('Last Name', validators=[DataRequired()])

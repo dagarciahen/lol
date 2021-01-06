@@ -1,5 +1,5 @@
 from db import db
-from . import User, City
+from . import User, Country
 
 
 class Profile(db.Model):
@@ -7,6 +7,7 @@ class Profile(db.Model):
 
     user_id = db.Column(db.Integer, db.ForeignKey(User.user_id), primary_key=True)
     picture = db.Column(db.Text)
+    city = db.Column(db.Text)
     name = db.Column(db.Text, nullable=False)
     last_name = db.Column(db.Text, nullable=False)
     bio = db.Column(db.Text)
@@ -14,6 +15,7 @@ class Profile(db.Model):
     identification_number = db.Column(db.String(20), nullable=False)
     phone = db.Column(db.String(14))
 
-    city_id = db.Column(db.Integer, db.ForeignKey(City.city_id))
+    country_id = db.Column(db.Integer, db.ForeignKey(Country.country_id))
 
     user = db.relationship(User, back_populates="profile")
+    country = db.relationship(Country)
