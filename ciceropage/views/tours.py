@@ -8,7 +8,7 @@ from ..utils.picture_handler import upload_picture
 
 tours = Blueprint('tours', __name__, url_prefix='/tours')
 
-ROW_PER_PAGE = 6
+ROWS_PER_PAGE = 6
 
 
 @tours.route('', methods=['GET'])
@@ -17,7 +17,7 @@ def list_all():
     tour_list = Tour.query.filter_by(status='published').order_by(
         Tour.date.desc()
     ).paginate(
-        page=page, per_page=ROW_PER_PAGE
+        page=page, per_page=ROWS_PER_PAGE
     )
     return render_template('pages/tours/list.html', tours=tour_list)
 
@@ -25,8 +25,26 @@ def list_all():
 @tours.route('/by/me', methods=['GET'])
 @login_required
 def my():
-    tour_list = Tour.query.filter_by(user_id=current_user.user_id).order_by(Tour.date.desc()).all()
-    return render_template('pages/tours/by_me.html', tours=tour_list)
+    page = request.args.get('page', 1, type=int)
+    tour_list = Tour.query.filter_by(user_id=current_user.user_id).order_by(
+        Tour.date.desc()
+    ).paginate(
+        page=page, per_page=ROWS_PER_PAGE
+    )
+    return render_template('pages/tours/by.html', user=current_user, tours=tour_list)
+
+
+@tours.route('/by/<int:user_id>', methods=['GET'])
+@login_required
+def by(user_id):
+    user = User.query.get(user_id)
+    page = request.args.get('page', 1, type=int)
+    tour_list = Tour.query.filter_by(status='published', user_id=user_id).order_by(
+        Tour.date.desc()
+    ).paginate(
+        page=page, per_page=ROWS_PER_PAGE
+    )
+    return render_template('pages/tours/by.html', user=user, tours=tour_list)
 
 
 @tours.route('/new', methods=['GET', 'POST'])

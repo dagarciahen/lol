@@ -1,0 +1,25 @@
+{% extends 'layout/base.html' %}
+{% block title %}My tours{% endblock %}
+{% block content %}
+<div class="container">
+    {% include 'sections/flashed-messages.html' %}
+    <div class="row">
+        <div class="col">
+            <div class="mt-5 mb-4">
+                <h1 class="h3">
+                    {% if user.user_id == current_user.user_id %}
+                        My tours
+                    {% else %}
+                        Tours by <a href="{{ url_for('users.profile', user_id=user.user_id) }}">{{ user.profile.name }} {{ user.profile.last_name }}</a>
+                    {% endif %}
+                </h1>
+            </div>
+        </div>
+    </div>
+    {% include 'sections/tours-list.html' %}
+    {% set pagination_view = 'tours.by' %}
+    <div class="row my-5">
+        {% include 'sections/tours-pagination-by.html' %}
+    </div>
+</div>
+{% endblock %}

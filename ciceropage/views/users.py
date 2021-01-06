@@ -1,5 +1,5 @@
 from datetime import datetime
-from flask import Blueprint, render_template, redirect, url_for, abort
+from flask import Blueprint, render_template, redirect, url_for, abort, request
 from flask_login import current_user, login_required
 from sqlalchemy import and_, or_, func
 from sqlalchemy.orm.util import AliasedClass
@@ -20,8 +20,13 @@ def profile(user_id):
     else:
         user = User.query.get(int(user_id))
     if user:
-        tours = Tour.query.filter_by(user_id=user.user_id).order_by(Tour.date.desc()).limit(10).all()
-        return render_template('pages/users/profile.html', user=user, tours=tours)
+        page = request.args.get('page', 1, type=int)
+        tour_list = Tour.query.filter_by(user_id=user.user_id).order_by(
+            Tour.date.desc()
+        ).paginate(
+            page=page, per_page=10
+        )
+        return render_template('pages/users/profile.html', user=user, tours=tour_list)
     abort(404)
 
 
@@ -29,7 +34,6 @@ def profile(user_id):
 @login_required
 def edit(user_id):
     if current_user.user_id != user_id:
-        print('heeey')
         abort(403)
     form = ProfileForm()
     user = User.query.get(current_user.user_id)
