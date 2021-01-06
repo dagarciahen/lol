@@ -9,7 +9,7 @@
                 <h1 class="h2">{{ tour.title }}</h1>
                 <div class="lead">
                     <span class="me-4" title="Published on"><i class="bi bi-clock"></i> {{ moment(tour.date).format('dddd, MMMM Do YYYY, h:mm:ss a') }}</span>
-                    <span title="Location"><i class="bi bi-geo-alt"></i> {{ tour.location.name }}</span>
+                    <span title="Location"><i class="bi bi-geo-alt"></i> {{ tour.city }}, {{ tour.country.name }}</span>
                 </div>
             </div>
         </div>

@@ -12,15 +12,19 @@
           </div>
           <div class="navbar-nav">
               {% if current_user.is_authenticated %}
+              {% if current_user.type == 'guide' %}
               <a class="nav-link" href="#">
                       <a class="btn btn-outline-light" role="button" href="{{ url_for('tours.new') }}"><i class="bi bi-plus-circle"></i> Create a tour</a>
               </a>
+              {% endif %}
               <div class="nav-item dropdown ms-2">
                   <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                       Hi, {{ current_user.email }}
                   </a>
                   <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                      {% if current_user.type == 'guide' %}
                       <a class="dropdown-item" href="{{ url_for('tours.my') }}">My tours</a>
+                      {% endif %}
                       <a class="dropdown-item" href="{{ url_for('users.my_messages') }}">My messages</a>
                       <a class="dropdown-item" href="{{ url_for('users.profile', user_id='me') }}">Profile</a>
                       <hr class="dropdown-divider">

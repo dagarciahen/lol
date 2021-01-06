@@ -39,9 +39,13 @@ def my():
 def by(user_id):
     user = User.query.get(user_id)
     page = request.args.get('page', 1, type=int)
-    tour_list = Tour.query.filter_by(status='published', user_id=user_id).order_by(
+    tour_list = Tour.query.filter_by(user_id=user_id).order_by(
         Tour.date.desc()
-    ).paginate(
+    )
+
+    if current_user.user_id != user_id:
+        tour_list = tour_list.filter_by(status='published')
+    tour_list = tour_list.paginate(
         page=page, per_page=ROWS_PER_PAGE
     )
     return render_template('pages/tours/by.html', user=user, tours=tour_list)
@@ -50,6 +54,8 @@ def by(user_id):
 @tours.route('/new', methods=['GET', 'POST'])
 @login_required
 def new():
+    if current_user.type == 'tourist':
+        abort(403)
     form = TourForm()
     if form.validate_on_submit():
         tour = Tour()
@@ -60,8 +66,9 @@ def new():
         # get user id
         tour.user_id = current_user.user_id
 
-        # get current city
-        tour.city_id = current_user.profile.city_id
+        # get current location
+        tour.country_id = current_user.profile.country_id
+        tour.city = current_user.profile.city
 
         # add thumbnail
         thumbnail_file = form.thumbnail.data

@@ -49,6 +49,9 @@
               </a>
                 {% endfor %}
             </div>
+            {% if not messages  %}
+            <p class="lead">Nothing to see here :(</p>
+            {% endif %}
         </div>
     </div>
 </div>
