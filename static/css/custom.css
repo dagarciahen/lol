@@ -28,5 +28,9 @@ body {
 }
 
 .card-pic-container {
-    background-color: #ececec;
+    width: 60px;
+    height: 60px;
+    border-radius: 30px;
+    overflow: hidden;
+    background-color: #c7e3f7;
 }
