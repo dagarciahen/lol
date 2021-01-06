@@ -142,6 +142,8 @@ def favorite(tour_id):
     favorited = Favorite()
     favorited.user_id = current_user.user_id
     favorited.tour_id = tour_id
+    db.session.add(favorited)
+    db.session.commit()
     flash("Added to favorites", category='success')
     return redirect(url_for('tours.show', tour_id=tour_id))
 

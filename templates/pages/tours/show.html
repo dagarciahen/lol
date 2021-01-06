@@ -4,27 +4,31 @@
 <section class="container">
     {% include 'sections/flashed-messages.html' %}
     <div class="row">
-        <div class="col">
-            <div class="mb-4">
+        <div class="col-12">
+            <div class="mb-5">
                 <h1 class="h2">{{ tour.title }}</h1>
+                <div class="lead">
+                    <span class="me-4" title="Published on"><i class="bi bi-clock"></i> {{ moment(tour.date).format('dddd, MMMM Do YYYY, h:mm:ss a') }}</span>
+                    <span title="Location"><i class="bi bi-geo-alt"></i> {{ tour.location.name }}</span>
+                </div>
             </div>
         </div>
     </div>
-    <section class="row mb-4">
+    <div class="row">
+        <div class="col-8">
+            <section class="row mb-4">
         <div class="col">
             <h2 class="lead">Description</h2>
             <p>{{ tour.description }}</p>
-            <p>{{ moment(tour.date).format('dddd, MMMM Do YYYY, h:mm:ss a') }}</p>
         </div>
     </section>
-        <section class="row mb-4">
+            <section class="row mb-4">
         <div class="col">
             <h2 class="lead">Pictures</h2>
-            <p>{{ tour.description }}</p>
-            <p>{{ moment(tour.date).format('dddd, MMMM Do YYYY, h:mm:ss a') }}</p>
+            <p>Not implemented yet.</p>
         </div>
     </section>
-    <section class="row mt-4 mb-5">
+            <section class="row mt-4 mb-5">
         <div class="col">
             <h2 class="lead">Meet the tour guide</h2>
             <div class="card mb-3" style="max-width: 400px;">
@@ -56,6 +60,21 @@
             <p></p>
         </div>
     </section>
+        </div>
+        <div class="col-4">
+            {% for favorited_by in tour.favorited_by %}
+                {% if favorited_by.user_id == current_user.user_id %}
+                <div  class="favorite-btn-container p-3">
+                    <a href="#" class="btn btn-danger"><i class="bi bi-heart-fill"></i> Added to favorites</a>
+                </div>
+                {% endif %}
+            {% else %}
+                <form  class="favorite-btn-container p-3" method="post" action="{{ url_for('tours.favorite', tour_id=tour.tour_id) }}">
+                    <button type="submit" class="btn btn-outline-danger"><i class="bi bi-heart"></i> Add to favorites</button>
+                </form>
+            {% endfor %}
+        </div>
+    </div>
 </section>
 <section class="container">
     <div class="row">

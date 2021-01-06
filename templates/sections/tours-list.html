@@ -7,7 +7,10 @@
           <img src="{{ url_for('static', filename='images/tours'+ '/' + tour.thumbnail) }}" />
         </div>
         <div class="card-body">
-          <h5 class="card-title">{{ tour.title | truncate(60)}} {% if tour.status == 'draft' %} [Draft] {% endif %}</h5>
+          <h5 class="card-title">{{ tour.title | truncate(60)}}
+            {% if tour.status == 'draft' %} [Draft] {% endif %}
+            {% if tour.status == 'hidden' %} *Hidden* {% endif %}
+          </h5>
           <p class="card-text">{{ tour.description | truncate(100) }}</p>
           <div class="d-flex justify-content-between align-items-center">
             <div class="btn-group">

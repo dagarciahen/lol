@@ -41,6 +41,7 @@ class City(db.Model):
     region_id = db.Column(db.Integer, db.ForeignKey('regions.region_id'))
 
     region = db.relationship("Region")
+    tours = db.relationship("Tour", back_populates="location")
 
     def to_dict(self):
         return {

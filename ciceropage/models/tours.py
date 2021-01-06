@@ -22,6 +22,8 @@ class Tour(db.Model):
     author = db.relationship('User')
     favorited_by = db.relationship('Favorite')
 
+    location = db.relationship('City')
+
 
 class Image(db.Model):
     __tablename__ = 'images'
