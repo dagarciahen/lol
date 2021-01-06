@@ -311,6 +311,7 @@ ul {
     visibility: hidden;
 }
 
+.chat-attached > .chat-avatar,
 .chat-right.chat-last > .chat-avatar,
 .chat-left.chat-last > .chat-avatar {
     visibility: visible;

@@ -1,7 +1,8 @@
 from datetime import datetime
 from flask import Blueprint, render_template, redirect, url_for, abort
 from flask_login import current_user, login_required
-from sqlalchemy import and_, or_
+from sqlalchemy import and_, or_, func
+from sqlalchemy.orm.util import AliasedClass
 
 from ..forms.users import ProfileForm
 from ..models import Tour, User, Message
@@ -100,9 +101,17 @@ def handle_message(data):
 @users.route('/me/messages')
 @login_required
 def my_messages():
+    m = AliasedClass(Message)
+
     messages = Message.query.filter(
-        or_(
-            Message.sender_id == current_user.user_id,
-            Message.recipient_id == current_user.user_id)
-    ).order_by(Message.message_id.desc()).group_by(Message.sender_id, Message.recipient_id).all()
+        or_(Message.sender_id == current_user.user_id, Message.recipient_id == current_user.user_id),
+        Message.date.in_(
+            db.session.query(func.max(m.date)).filter(
+                or_(
+                    and_(Message.sender_id == m.sender_id, Message.recipient_id == m.recipient_id),
+                    and_(Message.sender_id == m.recipient_id, Message.recipient_id == m.sender_id)
+                )
+            )
+        )
+    ).order_by(Message.message_id.desc())
     return render_template('pages/messages/all.html', messages=messages)
