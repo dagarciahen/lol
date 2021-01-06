@@ -27,6 +27,7 @@ body {
     background-color: #5d5d5d;
 }
 
+.profile-img-container,
 .card-pic-container {
     width: 60px;
     height: 60px;
@@ -34,6 +35,14 @@ body {
     overflow: hidden;
     background-color: #c7e3f7;
 }
+
+.profile-img-container,
+.card-pic-container {
+    width: 100px;
+    height: 100px;
+    border-radius: 50px;
+}
+
 
 .favorite-btn-container {
     background-color: #fdffe0;
