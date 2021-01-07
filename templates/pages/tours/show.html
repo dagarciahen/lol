@@ -64,12 +64,12 @@
         <div class="col-4">
             {% for favorited_by in tour.favorited_by %}
                 {% if favorited_by.user_id == current_user.user_id %}
-                <div  class="favorite-btn-container p-3">
-                    <a href="#" class="btn btn-danger"><i class="bi bi-heart-fill"></i> Added to favorites</a>
-                </div>
+                <form class="favorite-btn-container p-3" method="post" action="{{ url_for('tours.unfavorite', tour_id=tour.tour_id) }}">
+                    <button type="submit" class="btn btn-danger"><i class="bi bi-heart-fill"></i> Added to favorites</button>
+                </form>
                 {% endif %}
             {% else %}
-                <form  class="favorite-btn-container p-3" method="post" action="{{ url_for('tours.favorite', tour_id=tour.tour_id) }}">
+                <form class="favorite-btn-container p-3" method="post" action="{{ url_for('tours.favorite', tour_id=tour.tour_id) }}">
                     <button type="submit" class="btn btn-outline-danger"><i class="bi bi-heart"></i> Add to favorites</button>
                 </form>
             {% endfor %}

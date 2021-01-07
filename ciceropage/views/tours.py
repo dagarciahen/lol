@@ -155,6 +155,20 @@ def favorite(tour_id):
     return redirect(url_for('tours.show', tour_id=tour_id))
 
 
+@tours.route('/<int:tour_id>/unfavorite', methods=['POST'])
+@login_required
+def unfavorite(tour_id):
+    favorited = Favorite.query.filter_by(tour_id=tour_id,user_id=current_user.user_id).first()
+
+    if favorited:
+        db.session.delete(favorited)
+        db.session.commit()
+        flash("Removed from favorites", category='success')
+    else:
+        flash("Couldn't remove from favorites", category='error')
+    return redirect(url_for('tours.show', tour_id=tour_id))
+
+
 @tours.route('/<int:tour_id>/reviews', methods=['POST'])
 @login_required
 def add_review(tour_id):
