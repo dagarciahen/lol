@@ -1,5 +1,117 @@
 {% extends 'layout/base.html' %}
-{% block title %}Chat to ...{% endblock %}
+{% block title %}Edit profile{% endblock %}
 {% block content %}
 
+<div class="container-fluid">
+    <div class="row min-vh-100">
+        <div class="col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-4 offset-lg-4 d-flex align-items-center py-5">
+            <div id="signup-container" class="p-5 w-100">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <h1 class="h3">Edit profile</h1>
+                    <button class="btn-close" aria-label="Close" onclick="goToProfile()"></button>
+                </div>
+                <form method="post" action="" enctype="multipart/form-data">
+                    {{ form.csrf_token }}
+                      <div class="mb-3">
+                        {{ form.picture.label(class_="form-label" ) }}
+                        {{ form.picture(class_="form-control") }}
+                        {% for error in form.picture.errors %}
+                         <div class="invalid-feedback d-block">
+                           {{ error }}
+                         </div>
+                        {% endfor %}
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-12 col-lg-6 mb-3 mb-lg-0">
+                            {{ form.country.label(class_="form-label" ) }}*
+                            {{ form.country(class_="form-select", id="countryList") }}
+                            {% for error in form.country.errors %}
+                             <div class="invalid-feedback d-block">
+                               {{ error }}
+                             </div>
+                        {% endfor %}
+                        </div>
+                        <div class="col-12 col-lg-6">
+                            {{ form.city.label(class_="form-label" ) }}*
+                            {{ form.city(class_="form-control", id="cityList") }}
+                            {% for error in form.city.errors %}
+                             <div class="invalid-feedback d-block">
+                               {{ error }}
+                             </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row mb-3">
+                        <div class="col-12 col-lg-6 mb-3 mb-lg-0">
+                            {{ form.name.label(class_="form-label" )  }}*
+                            {{ form.name(class_="form-control") }}
+                            {% for error in form.name.errors %}
+                             <div class="invalid-feedback d-block">
+                               {{ error }}
+                             </div>
+                            {% endfor %}
+                        </div>
+                        <div class="col-12 col-lg-6">
+                            {{ form.last_name.label(class_="form-label" ) }}*
+                            {{ form.last_name(class_="form-control") }}
+                            {% for error in form.last_name.errors %}
+                             <div class="invalid-feedback d-block">
+                               {{ error }}
+                             </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        {{ form.bio.label(class_="form-label" ) }}
+                        {{ form.bio(class_="form-control") }}
+                        {% for error in form.bio.errors %}
+                         <div class="invalid-feedback d-block">
+                           {{ error }}
+                         </div>
+                        {% endfor %}
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-12 col-lg-4 mb-3 mb-lg-0">
+                            {{ form.identification_type.label(class_="form-label" ) }}*
+                            {{ form.identification_type(class_="form-select") }}
+                            {% for error in form.identification_type.errors %}
+                             <div class="invalid-feedback d-block">
+                               {{ error }}
+                             </div>
+                            {% endfor %}
+                        </div>
+                        <div class="col-12 col-lg-8">
+                            {{ form.identification_number.label(class_="form-label" ) }}*
+                            {{ form.identification_number(class_="form-control") }}
+                            {% for error in form.identification_number.errors %}
+                             <div class="invalid-feedback d-block">
+                               {{ error }}
+                             </div>
+                            {% endfor %}
+                        </div>
+
+                    </div>
+                    <div class="mb-3">
+                        {{ form.phone.label(class_="form-label" ) }}
+                        {{ form.phone(class_="form-control") }}
+                        {% for error in form.phone.errors %}
+                         <div class="invalid-feedback d-block">
+                           {{ error }}
+                         </div>
+                        {% endfor %}
+                    </div>
+                    <div class="text-center">
+                        {{ form.submit(class_="btn btn-primary") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+  function goToProfile(){
+    location.href = "{{ url_for('users.profile', user_id='me') }}"
+  }
+</script>
 {% endblock %}

@@ -1,14 +1,15 @@
 from datetime import datetime
-from flask import Blueprint, render_template, redirect, url_for, abort, request
+from flask import Blueprint, render_template, redirect, url_for, abort, request, flash
 from flask_login import current_user, login_required
 from sqlalchemy import and_, or_, func
 from sqlalchemy.orm.util import AliasedClass
 
-from ..forms.users import ProfileForm
-from ..models import Tour, User, Message
-from chatsocket import socket_io
-
 from db import db
+from chatsocket import socket_io
+from ..forms.users import ProfileForm
+from ..models import Tour, User, Message, Country
+from ..utils.picture_handler import upload_picture
+
 
 users = Blueprint('users', __name__, url_prefix='/users')
 
@@ -36,22 +37,47 @@ def profile(user_id):
 @users.route('/<int:user_id>/edit', methods=['GET', 'POST'])
 @login_required
 def edit(user_id):
+    user = User.query.get_or_404(current_user.user_id)
     if current_user.user_id != user_id:
         abort(403)
     form = ProfileForm()
-    user = User.query.get(current_user.user_id)
+    form.name.data = user.profile.name
+    form.last_name.data = user.profile.last_name
+    form.bio.data = user.profile.bio
+    form.identification_type.data = user.profile.identification_type
+    form.identification_number.data = user.profile.identification_number
+    form.phone.data = user.profile.phone
 
-    form.name = user.profile.name
-    form.last_name = user.profile.last_name
-    form.bio = user.profile.bio
-    form.identification_type = user.profile.identification_type
-    form.identification_number = user.profile.identification_number
-    form.phone = user.profile.phone
+    # populate country list
+    countries = Country.query.all()
+    form.country.choices = [(country.country_id, country.name) for country in countries] if countries else [
+        ('0', 'Select')
+    ]
+    form.country.data = str(user.profile.country_id)
+    form.city.data = user.profile.city
 
     if form.validate_on_submit():
-        # TODO update info
-        # update info
-        pass
+        user.profile.name = request.form.get('name')
+        user.profile.last_name = request.form.get('last_name')
+        user.profile.bio = request.form.get('bio')
+        user.profile.identification_type = request.form.get('identification_type')
+        user.profile.identification_number = request.form.get('identification_number')
+        user.profile.phone = request.form.get('phone')
+
+        user.profile.country_id = request.form.get('country')
+        user.profile.city = request.form.get('city')
+
+        # check if we have a new picture
+        if form.picture.data:
+            # add thumbnail
+            picture_file = form.picture.data
+            picture = upload_picture(picture_file, current_user.user_id, folder='profiles')
+            user.profile.picture = picture
+
+        db.session.add(user)
+        db.session.commit()
+        flash('Profile updated successfully.', category='success')
+        return redirect(url_for('users.profile', user_id=user.user_id))
     return render_template('pages/users/edit.html', form=form)
 
 

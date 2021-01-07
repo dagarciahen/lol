@@ -36,8 +36,7 @@ body {
     background-color: #c7e3f7;
 }
 
-.profile-img-container,
-.card-pic-container {
+.profile-img-container {
     width: 100px;
     height: 100px;
     border-radius: 50px;

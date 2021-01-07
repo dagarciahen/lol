@@ -26,7 +26,7 @@
                       <a class="dropdown-item" href="{{ url_for('tours.my') }}">My tours</a>
                       {% endif %}
                       <a class="dropdown-item" href="{{ url_for('users.my_messages') }}">My messages</a>
-                      <a class="dropdown-item" href="{{ url_for('users.profile', user_id='me') }}">Profile</a>
+                      <a class="dropdown-item" href="{{ url_for('users.profile', user_id='me') }}">My profile</a>
                       <hr class="dropdown-divider">
                       <form class="px-3" method="post" action="{{ url_for('auth.logout') }}">
                         <button class="btn btn-outline-primary">Log out</button>

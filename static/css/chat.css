@@ -204,6 +204,10 @@
 .chat-container li .chat-avatar {
     align-self: flex-end;
     margin-right: 20px;
+    width: 48px;
+    height: 48px;
+    border-radius: 30px;
+    background-color: #c7e3f7;
 }
 
 .chat-container li.chat-right {
