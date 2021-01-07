@@ -4,6 +4,7 @@ from flask_login import LoginManager
 from flask_moment import Moment
 
 from db import db
+from mail import mail
 from chatsocket import socket_io
 
 app = Flask(__name__)
@@ -14,6 +15,7 @@ app.config.from_object('config.DevelopmentConfig')
 
 db.init_app(app)
 socket_io.init_app(app)
+mail.init_app(app)
 
 login_manager = LoginManager(app)
 login_manager.login_view = "auth.login"

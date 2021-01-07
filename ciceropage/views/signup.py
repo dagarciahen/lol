@@ -1,9 +1,11 @@
-from flask import Blueprint, current_app, render_template, request, session, redirect, url_for
-from flask_login import current_user
 from itsdangerous import URLSafeTimedSerializer
 from itsdangerous import BadSignature
+from flask import Blueprint, current_app, render_template, request, session, redirect, url_for
+from flask_login import current_user
+from flask_mail import Message
 
 from db import db
+from mail import mail
 from ciceropage.forms.users import SignUpForm, SignUpCompletionForm
 from ciceropage.models import User, Profile, Country
 
@@ -24,8 +26,12 @@ def sign_up():
             secret_key = current_app.config['SECRET_KEY']
             ts = URLSafeTimedSerializer(secret_key, salt='sign-up')
             verification_token = ts.dumps({"email": email, "user_type": user_type})
-            print(verification_token)
-            # TODO send email with activation link
+            url_token = '{}/sign-up/verify/{}'.format(current_app.config['SITE_URL'], verification_token)
+            msg = Message("Verify account", sender=("Cicero demo", current_app.config['MAIL_USERNAME']))
+            msg.recipients = [email]
+            msg.body = 'Complete your account information'
+            msg.html = render_template('mail.html', url_token=url_token)
+            mail.send(msg)
             sent_token = verification_token is not None
     return render_template('pages/sign_up/sign-up.html', form=form, sent=sent_token)
 
