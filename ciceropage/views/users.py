@@ -25,7 +25,7 @@ def profile(user_id):
         tour_list = Tour.query.filter_by(user_id=user.user_id).order_by(
             Tour.date.desc()
         )
-        if current_user.user_id != user.user_id:
+        if not current_user.is_authenticated or current_user.user_id != user.user_id:
             tour_list = tour_list.filter_by(status='published')
         tour_list = tour_list.paginate(
             page=page, per_page=10
