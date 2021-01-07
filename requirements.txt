@@ -1,6 +1,7 @@
 alembic==1.4.3
 bcrypt==3.1.4
 bidict==0.21.2
+blinker==1.4
 certifi==2018.1.18
 click==6.7
 dnspython==2.0.0
@@ -8,7 +9,7 @@ email-validator==1.1.2
 Flask==1.1.0
 Flask-Bcrypt==0.7.1
 Flask-Login==0.4.1
-Flask-Mail==0.9.1
+Flask-Mail==0.9.0
 Flask-Migrate==2.5.3
 Flask-Moment==0.11.0
 Flask-SocketIO==4.3.2

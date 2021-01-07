@@ -22,7 +22,7 @@
                     </div>
                     {% endif %}
                     <div class="mb-4">
-                        <h1 class="h4">Sign up for an account</h1>
+                        <h1 class="h4">Sign up for an account as a {% if account_type == 'guide' %}guide{%else%}tourist{% endif %}</h1>
                         <p>Enter your email and complete the steps to create your account.</p>
                     </div>
                     {% with messages = get_flashed_messages() %}
@@ -44,6 +44,9 @@
                         {% endfor %}
                     </div>
                     {{ form.submit(class_="btn btn-primary") }}
+                    <div class="my-5">
+                        <a href="{{ url_for('signup.sign_up', account_type='guide') }}">Sign up as a guide? Click here.</a>
+                    </div>
                 </form>
             </div>
         </div>

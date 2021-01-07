@@ -18,8 +18,8 @@ def sign_up():
         return redirect(url_for('home.index'))
     form = SignUpForm()
     sent_token = False
+    user_type = request.args.get('account_type', 'tourist')
     if request.method == 'POST' and form.validate_on_submit():
-        user_type = request.args.get('account_type', 'tourist')
         user_type = user_type if user_type in ['tourist', 'guide'] else 'tourist'
         email = request.form.get('email', None)
         if email:
@@ -33,7 +33,7 @@ def sign_up():
             msg.html = render_template('mail.html', url_token=url_token)
             mail.send(msg)
             sent_token = verification_token is not None
-    return render_template('pages/sign_up/sign-up.html', form=form, sent=sent_token)
+    return render_template('pages/sign_up/sign-up.html', form=form, sent=sent_token, account_type=user_type)
 
 
 @signup.route('/verify/<verification_token>', methods=['GET'])

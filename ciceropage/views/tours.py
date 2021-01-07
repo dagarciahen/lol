@@ -217,7 +217,7 @@ def search():
             Tour.title.ilike('%{}%'.format(q)),
             Tour.city.ilike('%{}%'.format(q)),
             Tour.description.ilike('%{}%'.format(q)),
-            Country.name.ilike('%{}%'.format(q))
+            Country.name.ilike('%{}%'.format(q))  # fix this
         )).paginate(
             page=page, per_page=ROWS_PER_PAGE
         )
