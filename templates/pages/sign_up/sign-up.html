@@ -8,8 +8,10 @@
             <div class="w-75 mx-auto">
                 <form method="post">
                     {{ form.csrf_token }}
-                    <div class="mb-5">
-                        <a href="{{ url_for('pages.about') }}">Home</a>
+                    <div class="my-5 mx-auto" style="max-width: 400px">
+                        <a href="{{ url_for('pages.about') }}">
+                            <img class="img-fluid" src="{{ url_for('static', filename='images/cicero_color.png') }}" alt="Cicero Travelers" class="d-inline-block align-top">
+                        </a>
                     </div>
                     {% if sent %}
                     <div class="alert alert-success" role="alert">

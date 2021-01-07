@@ -3,11 +3,18 @@
 {% block content %}
 <div class="container mb-5">
     <div class="row">
-        <div class="col">
+        <div class="col-12">
             <div class="mt-5 mb-4">
                 <h1 class="h3">Tours</h1>
             </div>
         </div>
+        {% if is_search %}
+        <div class="col-12 mb-5">
+            <div class="lead">
+                <p>Showing results for <b>'{{ q }}'</b></p>
+            </div>
+        </div>
+        {% endif %}
     </div>
     {% include 'sections/tours-list.html' %}
     <div class="row my-5">

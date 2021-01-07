@@ -6,8 +6,10 @@
     <div class="row min-vh-100">
         <div class="col-md-4 offset-md-4 d-flex align-items-center">
             <div id="signup-container" class="p-5 text-center">
-                <div class="mb-5">
-                    <a href="{{ url_for('home.index') }}">Logo</a>
+                <div class="my-5 mx-auto" style="max-width: 400px">
+                    <a href="{{ url_for('pages.about') }}">
+                        <img class="img-fluid" src="{{ url_for('static', filename='images/cicero_color.png') }}" alt="Cicero Travelers" class="d-inline-block align-top">
+                    </a>
                 </div>
                 {% if data %}
                 <p>Your email address <b>{{data.email}}</b> has been verified. Please click on the button below to set up your account.</p>

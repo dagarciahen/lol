@@ -1,9 +1,10 @@
 from flask import Blueprint, render_template, request, abort, flash, redirect, url_for
 from flask_login import login_required, current_user
+from sqlalchemy import or_
 
 from db import db
 from ..forms.tours import TourForm, TourEditForm, ReviewForm
-from ..models import User, Tour, Image, Review, Favorite
+from ..models import User, Tour, Review, Favorite, Country
 from ..utils.picture_handler import upload_picture
 
 tours = Blueprint('tours', __name__, url_prefix='/tours')
@@ -204,6 +205,27 @@ def delete_review(tour_id, review_id):
 
 
 @tours.route('/search', methods=['GET', 'POST'])
-@login_required
 def search():
-    return "Search"
+    page = request.args.get('page', 1, type=int)
+    if request.method == 'GET':
+        q = request.args.get('q')
+    else:
+        q = request.form.get('q', None)
+    if q:
+        is_search = True
+        tour_list = Tour.query.filter(or_(
+            Tour.title.ilike('%{}%'.format(q)),
+            Tour.city.ilike('%{}%'.format(q)),
+            Tour.description.ilike('%{}%'.format(q)),
+            Country.name.ilike('%{}%'.format(q))
+        )).paginate(
+            page=page, per_page=ROWS_PER_PAGE
+        )
+    else:
+        is_search = False
+        tour_list = Tour.query.filter_by(
+            status='published'
+        ).paginate(
+            page=page, per_page=ROWS_PER_PAGE
+        )
+    return render_template('pages/tours/list.html', q=q, tours=tour_list, is_search=is_search)

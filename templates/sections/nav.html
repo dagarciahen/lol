@@ -1,6 +1,8 @@
 <nav class="navbar navbar-expand-md navbar-dark bg-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="{{ url_for('home.index') }}">CICERO</a>
+        <a class="navbar-brand" href="{{ url_for('home.index') }}">
+                  <img src="{{ url_for('static', filename='images/cicero_white.png') }}" alt="" width="auto" height="28" class="d-inline-block align-top">
+        </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
