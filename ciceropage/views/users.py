@@ -22,10 +22,10 @@ def profile(user_id):
         user = User.query.get(int(user_id))
     if user:
         page = request.args.get('page', 1, type=int)
-        tour_list = Tour.query.filter_by(user_id=user_id).order_by(
+        tour_list = Tour.query.filter_by(user_id=user.user_id).order_by(
             Tour.date.desc()
         )
-        if current_user.user_id != user_id:
+        if current_user.user_id != user.user_id:
             tour_list = tour_list.filter_by(status='published')
         tour_list = tour_list.paginate(
             page=page, per_page=10
