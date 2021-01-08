@@ -213,11 +213,11 @@ def search():
         q = request.form.get('q', None)
     if q:
         is_search = True
-        tour_list = Tour.query.filter(or_(
+        tour_list = Tour.query.join(Country).filter(or_(
             Tour.title.ilike('%{}%'.format(q)),
             Tour.city.ilike('%{}%'.format(q)),
             Tour.description.ilike('%{}%'.format(q)),
-            Country.name.ilike('%{}%'.format(q))  # fix this
+            Country.name.ilike('%{}%'.format(q))
         )).paginate(
             page=page, per_page=ROWS_PER_PAGE
         )
