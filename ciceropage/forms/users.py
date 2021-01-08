@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, HiddenField, SelectField, TextAreaField
+from wtforms import StringField, PasswordField, SubmitField, HiddenField, SelectField, TextAreaField, SelectMultipleField
 from wtforms.validators import DataRequired, Email, EqualTo
 from wtforms import ValidationError
 from flask_wtf.file import FileField, FileAllowed
@@ -50,9 +50,14 @@ class LoginForm(FlaskForm):
 
 class ProfileForm(FlaskForm):
 
+    LANGUAGE_CHOICES = [
+        ('-1', 'Select languages')
+    ]
+
     country = SelectField('Country', validate_choice=False)
     city = StringField('City', validators=[DataRequired()])
     picture = FileField('Profile picture', validators=[FileAllowed(['jpg', 'png'])])
+    languages = SelectMultipleField('Languages', choices=LANGUAGE_CHOICES, coerce=int)
     name = StringField('Name', validators=[DataRequired()])
     last_name = StringField('Last Name', validators=[DataRequired()])
     bio = TextAreaField('Bio')

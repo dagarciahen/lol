@@ -7,7 +7,7 @@ from sqlalchemy.orm.util import AliasedClass
 from db import db
 from chatsocket import socket_io
 from ..forms.users import ProfileForm
-from ..models import Tour, User, Message, Country
+from ..models import Tour, User, Message, Country, Language, UserLanguage
 from ..utils.picture_handler import upload_picture
 
 
@@ -56,6 +56,11 @@ def edit(user_id):
     form.country.data = str(user.profile.country_id)
     form.city.data = user.profile.city
 
+    # populate languages list
+    form.languages.choices = [(language.language_id, language.name) for language in Language.query.all()]
+    user_languages = UserLanguage.query.filter_by(user_id=user.user_id)
+    form.languages.data = [user_language.language_id for user_language in user_languages]
+
     if form.validate_on_submit():
         user.profile.name = request.form.get('name')
         user.profile.last_name = request.form.get('last_name')
@@ -73,6 +78,24 @@ def edit(user_id):
             picture_file = form.picture.data
             picture = upload_picture(picture_file, current_user.user_id, folder='profiles')
             user.profile.picture = picture
+
+        # check if we have a new language
+        selected_languages = request.form.getlist('languages')
+        user_languages_add = []
+
+        print(user_languages)
+
+        if len(selected_languages) > 0:
+            user_languages.delete()
+
+        for selected_language in selected_languages:
+            user_language_add = UserLanguage()
+            user_language_add.user_id = current_user.user_id
+            user_language_add.language_id = selected_language
+            user_languages_add.append(user_language_add)
+
+        # add languages
+        db.session.bulk_save_objects(user_languages_add)
 
         db.session.add(user)
         db.session.commit()

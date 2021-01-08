@@ -20,6 +20,7 @@
                          </div>
                         {% endfor %}
                     </div>
+                    <hr />
                     <div class="row mb-3">
                         <div class="col-12 col-lg-6 mb-3 mb-lg-0">
                             {{ form.country.label(class_="form-label" ) }}*
@@ -39,6 +40,15 @@
                              </div>
                             {% endfor %}
                         </div>
+                    </div>
+                    <div class="mb-3">
+                        {{ form.languages.label(class_="form-label" ) }}
+                        {{ form.languages(class_="form-select languages-select", id="#languages-select") }}
+                        {% for error in form.languages.errors %}
+                         <div class="invalid-feedback d-block">
+                           {{ error }}
+                         </div>
+                        {% endfor %}
                     </div>
                     <hr />
                     <div class="row mb-3">
@@ -108,7 +118,11 @@
         </div>
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
 <script type="text/javascript">
+   $(document).ready(function() {
+        $('.languages-select').select2();
+   });
   function goToProfile(){
     location.href = "{{ url_for('users.profile', user_id='me') }}"
   }
