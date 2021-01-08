@@ -68,6 +68,7 @@
                     {% set ns.show_unfavorite = True %}
                 {% endif %}
             {% endfor %}
+            {% if current_user.is_authenticated %}
             {% if ns.show_unfavorite %}
                 <form class="favorite-btn-container p-3" method="post" action="{{ url_for('tours.unfavorite', tour_id=tour.tour_id) }}">
                     <button type="submit" class="btn btn-danger"><i class="bi bi-heart-fill"></i> Added to favorites</button>
@@ -76,6 +77,7 @@
                 <form class="favorite-btn-container p-3" method="post" action="{{ url_for('tours.favorite', tour_id=tour.tour_id) }}">
                     <button type="submit" class="btn btn-outline-danger"><i class="bi bi-heart"></i> Add to favorites</button>
                 </form>
+            {% endif %}
             {% endif %}
         </div>
     </div>
@@ -120,7 +122,13 @@
                   </div>
               </div>
               <div class="tab-pane fade" id="add-review" role="tabpanel" aria-labelledby="add-review-tab">
-                {% include 'sections/tours-add-review.html' %}
+                  {% if current_user.is_authenticated %}
+                    {% include 'sections/tours-add-review.html' %}
+                  {% else %}
+                  <div class="alert alert-danger mt-5" role="alert">
+                        You need to log in to post a review: <a href="{{ url_for('auth.login', next=url_for('tours.show', tour_id=tour.tour_id) ) }}" class="alert-link">Log in</a>
+                  </div>
+                  {% endif %}
               </div>
             </div>
         </div>
