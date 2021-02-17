@@ -7,9 +7,9 @@ from flask_wtf.file import FileField, FileAllowed
 from ciceropage.models import User
 
 IDENTIFICATION_TYPE_CHOICES = [
-    ('cc', 'CC'),
+    ('id', 'ID'),
     ('passport', 'Passport'),
-    ('nit', 'Nit')
+    ('driver license', 'Drivers license')
 ]
 
 
